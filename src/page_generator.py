@@ -38,7 +38,7 @@ def extract_title(markdown):
     raise Exception("missing title")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     if not os.path.exists(from_path):
         raise Exception("invalid source path")
     if not os.path.exists(template_path):
@@ -55,14 +55,15 @@ def generate_page(from_path, template_path, dest_path):
     html_title = extract_title(markdown)
 
     titled_doc = template.replace("{{ Title }}", html_title)
-    final_doc = titled_doc.replace("{{ Content }}", document.to_html())
+    filled_doc = titled_doc.replace("{{ Content }}", document.to_html())
+    final_doc = filled_doc.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
 
     
     with open(f"{dest_path}/index.html", "w") as out:
         out.write(final_doc)
         print("Check!\n")
 
-def recursive_page_generator(dir_path_content, template_path, dest_dir_path):
+def recursive_page_generator(dir_path_content, template_path, dest_dir_path, basepath):
     if not os.path.exists(dir_path_content):
         raise Exception("invalid source path")
     if not os.path.exists(template_path):
@@ -76,8 +77,8 @@ def recursive_page_generator(dir_path_content, template_path, dest_dir_path):
     items = os.listdir(dir_path_content)
     for item in items:
         if os.path.isfile(f"{dir_path_content}/{item}"):
-            generate_page(f"{dir_path_content}/{item}", template_path, dest_dir_path)
+            generate_page(f"{dir_path_content}/{item}", template_path, dest_dir_path, basepath)
             continue
-        recursive_page_generator(f"{dir_path_content}/{item}", template_path, f"{dest_dir_path}/{item}")
+        recursive_page_generator(f"{dir_path_content}/{item}", template_path, f"{dest_dir_path}/{item}", basepath)
 
     print("All done!\n")
