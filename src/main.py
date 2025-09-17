@@ -1,10 +1,8 @@
-from textnode import TextNode, TextType
-
+from page_generator import from_dir_to_dir, recursive_page_generator
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
-    print(node)
+    from_dir_to_dir("static","public")
+    recursive_page_generator("content", "template.html", "public")
 
 
 main()
-
