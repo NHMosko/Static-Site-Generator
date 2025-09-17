@@ -14,7 +14,8 @@ def from_dir_to_dir(source, destination):
                 shutil.rmtree(destination)
             except Exception as e:
                 print(e)
-    os.mkdir(destination)
+    else:
+        os.mkdir(destination)
     print("Starting copy...")
 
     print()
